@@ -42,24 +42,24 @@ class User{
         return true; // Indicate that registration was successful
     }
 
-    public function login($email, $password) {
-        try {
-            // Prepare the SQL statement
-            $query = "SELECT * FROM users WHERE email = :email LIMIT 1";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
+    public function login() {
+        // Prepare the SQL statement
+        $query = "SELECT id, name, password FROM users WHERE email = :email LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->execute();
 
-            // Check if a user was found
-            if ($stmt->rowCount() > 0) {
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                // Verify the password
-                if (password_verify($password, $user['password'])) {
-                    return true; // Login successful
-                }
+        // Check if a user was found
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->id = $row['id'];
+            $this->name = $row['name'];
+            $hashed_password = $row['password'];
+
+            // Verify the password
+            if (password_verify($this->password, $hashed_password)) {
+                return true; // Login successful
             }
-        } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
         }
         return false; // Login failed
     }

@@ -13,22 +13,19 @@ $dotenv->load();
 // Debugging: Log the JWT_SECRET_KEY
 error_log('JWT_SECRET_KEY: ' . getenv('JWT_SECRET_KEY'));
 
-if (empty(getenv('JWT_SECRET_KEY'))) {
-    throw new Exception('JWT_SECRET_KEY not set in the environment variables.');
-}
+
 
 class JWTHandler {
     // Use the secret key from the .env file
     private $secret_key;
 
     public function __construct() {
-        $this->secret_key = getenv('JWT_SECRET_KEY'); // Fetch the secret key from the environment
-        error_log('JWT_SECRET_KEY: ' . $this->secret_key); // Log the secret key for debugging
-        if ($this->secret_key === false) {
-            error_log('JWT_SECRET_KEY not found in environment variables.'); // Log the error
+        $this->secret_key = getenv('JWT_SECRET_KEY');
+        if (empty($this->secret_key)) {
             throw new Exception('JWT_SECRET_KEY not set in the environment variables.');
         }
     }
+    
 
     public function encode($data) {
         try {

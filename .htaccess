@@ -1,0 +1,32 @@
+# Enable URL rewriting
+RewriteEngine On
+
+# Redirect requests to the api.php file if the requested file or directory does not exist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/(.*)$ api.php?endpoint=$1 [L,QSA]
+
+# Allow cross-origin requests (CORS)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+</IfModule>
+
+# Set default character encoding
+AddDefaultCharset UTF-8
+
+# Disable directory browsing
+Options -Indexes
+
+# Enable Gzip compression for API responses
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Set caching for static resources (optional)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    ExpiresByType application/json "access plus 1 day"
+</IfModule>
